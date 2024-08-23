@@ -3,7 +3,13 @@ from flask_cors import CORS
 import os
 
 from dotenv import load_dotenv
-from api_books import get_customer_rewards,get_loyalty_levels,get_loyalty_gift_received
+from api_books import (
+    get_customer_rewards,get_loyalty_levels,
+    get_loyalty_gift_received,
+    create_customers_info,
+    get_customer_details
+)
+
 
 load_dotenv()
 
@@ -16,6 +22,25 @@ CORS(app, resources={r"/*": {"origins": "*"}})
 def health_check():
     return jsonify({"message": "App is running......"})
     
+
+@app.route('/api/customers/create', methods=['POST'])
+def create_customers():
+    if request.method == 'POST':
+        data = request.json
+        result = create_customers_info(data)
+        return result
+    else:
+        return jsonify({"message": "Send a POST request to this endpoint"})
+
+
+@app.route('/api/customers/<customer_email_id>/details', methods=['GET'])
+def customer_details(customer_email_id):
+    if request.method == 'GET':
+        print(customer_email_id)
+        result = get_customer_details(customer_email_id)
+        return result
+    else:
+        return jsonify({"message": "Send a GET request to this endpoint"})
 
 @app.route('/api/customer_rewards', methods=['POST'])
 def customer_rewards():
